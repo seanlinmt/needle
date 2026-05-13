@@ -70,6 +70,31 @@ needle playground
 
 Opens a web UI at http://127.0.0.1:7860 where you can test and finetune on your own tools. Weights are auto-downloaded.
 
+### OpenAI-compatible API
+
+```bash
+needle api
+```
+
+Starts an OpenAI-compatible HTTP server on port 8000:
+
+- `GET /v1/models`
+- `POST /v1/chat/completions` (supports `stream`)
+
+Example request:
+
+```bash
+curl http://localhost:8000/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "needle",
+    "messages": [{"role": "user", "content": "What is the weather in San Francisco?"}],
+    "tools": [
+      {"type": "function", "function": {"name": "get_weather", "description": "Get weather", "parameters": {"type": "object", "properties": {"location": {"type": "string"}}, "required": ["location"]}}}
+    ]
+  }'
+```
+
 ## Usage (Python)
 
 ```python
@@ -102,6 +127,7 @@ needle finetune data.jsonl
 ## CLI
 
 ```
+needle api                         OpenAI-compatible API server
 needle playground                  Test and finetune via web UI
 needle finetune <data.jsonl>       Finetune on your own data
 needle run --query "..." --tools   Single inference
